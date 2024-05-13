@@ -15,6 +15,10 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
+      <excludeFolder url="file://$MODULE_DIR$/dataGenerator/extracted_content_ml-latest" />
+      <excludeFolder url="file://$MODULE_DIR$/dataGenerator/images_movies" />
+      <excludeFolder url="file://$MODULE_DIR$/recommender/static" />
+      <excludeFolder url="file://$MODULE_DIR$/static" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

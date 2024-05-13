@@ -1,0 +1,250 @@
+{% load static %}
+<style>
+.angry-grid {
+   display: grid;
+
+   grid-template-rows: 1fr 1fr 1fr;
+   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+
+   gap: 0px;
+   height: 100%;
+
+}
+
+#selected-information {
+    text-align: center;
+    background-color: #B77DBB;
+    grid-row-start: 1;
+    grid-column-start: 1;
+
+    grid-row-end: 2;
+    grid-column-end: 2;
+}
+
+#selected-description {
+    background-color: #F6B57E;
+    grid-row-start: 1;
+    grid-column-start: 2;
+
+    grid-row-end: 2;
+    grid-column-end: 6;
+}
+
+* {
+	box-sizing:border-box;
+}
+body {
+	margin:0;
+}
+#iau9 {
+	padding-top:0px;
+	padding-right:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+}
+.gjs-container {
+	width:90%;
+	margin:0 auto;
+	max-width:1200px;
+}
+.gjs-section {
+	display:flex;
+	padding:50px 0;
+}
+.gjs-grid-column {
+	flex:1 1 0%;
+	padding:5px 0;
+}
+.gjs-grid-row {
+	display:flex;
+	justify-content:flex-start;
+	align-items:stretch;
+	flex-direction:row;
+	min-height:auto;
+	padding:10px 0;
+}
+#ibs3 {
+	flex:0 0 12%;
+	padding-top:5px;
+	padding-right:5px;
+	padding-bottom:0px;
+	padding-left:5px;
+	margin-top:0px;
+	margin-right:0px;
+	margin-bottom:0px;
+	margin-left:0px;
+}
+#ibs4 {
+	flex:0 0 20%;
+	padding-top:5px;
+	padding-right:5px;
+	padding-bottom:0px;
+	padding-left:5px;
+	margin-top:0px;
+	margin-right:0px;
+	margin-bottom:0px;
+	margin-left:0px;
+}
+#ikla {
+	padding:10px;
+	position:relative;
+	bottom:100px;
+}
+#izkf {
+	flex:1 1 0%;
+}
+#i6fm1 {
+	{#font-family:"Open Sans",Arial,sans-serif;#}
+	text-align:justify;
+	margin: 10px;
+	position:relative;
+	bottom:126px;
+    /* 1 pixel black shadow to left, top, right and bottom */
+    text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff;
+
+    font-family: sans; color: black;
+}
+#i38gw {
+	padding:10px;
+	font-family:Arial,Helvetica,sans-serif;
+}
+#iu05j {
+	color:black;
+	padding-top:0px;
+	padding-right:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+}
+#itqy8 {
+	padding:10px;
+}
+#i3q8l {
+	padding:10px;
+}
+.gjs-image-box {
+	height:200px;
+	width:100%;
+}
+#ialkr {
+	background-image:url('https://i.imgur.com/5UjbpUe.jpeg');
+	background-size:contain;
+	background-position:center center;
+	background-attachment:scroll;
+	background-repeat:no-repeat;
+	height:421px;
+	position:static;
+	margin-top:0px;
+	margin-right:0px;
+	margin-bottom:0px;
+	margin-left:0px;
+	padding-top:0px;
+	padding-right:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+	border-top-left-radius:14px;
+	border-top-right-radius:14px;
+	border-bottom-right-radius:14px;
+	border-bottom-left-radius:14px;
+}
+#ialkr {
+	background-image:url('https://i.imgur.com/5UjbpUe.jpeg');
+	background-size:contain;
+	background-position:center center;
+	background-attachment:scroll;
+	background-repeat:no-repeat;
+}
+@media (max-width:992px) {
+	.gjs-grid-row {
+	flex-direction:column;
+}
+}
+
+</style>
+{%  if movie %}
+    <body id="iau9">
+  <section class="gjs-section" id="iqum">
+    <div class="gjs-container">
+      <div class="gjs-grid-row" id="ign2">
+        <div class="gjs-grid-column" id="ibs3">
+          <div id="i38gw">{{ movie.data.title }}</div>
+          <div id="i3q8l">{{ movie.data.release_date }} - {{ movie.data.mpaa }} - {{ movie.data.duration }}</div>
+            <img  id="iu05j" src="{% static movie.poster %}" alt="Poster Image">
+            <div id="itqy8"><a href="{{ movie.data.trailer_url }}">Watch trailer</a></div>
+        </div>
+        <div class="gjs-grid-column" id="izkf">
+          <div id="ikla"></div>
+          <div class="gjs-image-box" id="ialkr"></div>
+          <span id="i6fm1">{{ movie.data.description }}</span>
+        </div>
+      </div>
+        <h1>TMDB Recommendations</h1>
+        <div class="gjs-grid-row" id="ign2">
+            {% for recommendation in recommendations %}
+            <div class="gjs-grid-column" id="ibs4">
+              <div id="i38gw">{{ recommendation.data.title }}</div>
+              <div id="i3q8l">{{ recommendation.data.release_date }} - {{ recommendation.data.mpaa }} - {{ recommendation.data.duration }}</div>
+                <img  id="iu05j" src="{% static recommendation.poster %}" alt="Poster Image">
+                <div id="itqy8"><a href="{{ recommendation.data.trailer_url }}">Watch trailer</a></div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+  </section>
+  <section class="gjs-section" id="i322">
+    <div class="gjs-container"></div>
+  </section>
+</body>
+{%  endif %}
+{% if movie %}
+    <div class="angry-grid">
+        <div id="selected-information">
+            <img src="{% static movie.poster %}" alt="Poster Image">
+            <div>{{ movie.data.title }}</div>
+        </div>
+        <div id="selected-description">{{ movie.data.description }}</div>
+        {% for recommendation in recommendations %}
+            <div style="text-align: center; grid-row-start: 2; grid-row-end: 3; grid-column-start: {{ forloop.counter }}; grid-column-end: {{ forloop.counter|add:1 }}">
+            <img src="{% static recommendation.poster %}" alt="Poster Image">
+            <div>{{ recommendation.data.title }}</div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if movie %}
+    <div class="table_component" role="region" tabindex="0">
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Plot</th>
+                <th>Image</th>
+            </tr>
+            <tr>
+                <td>{{ movie.data.title }}</td>
+                <td>{{ movie.data.description }}</td>
+                <td>
+                    <img src="{% static movie.poster %}" alt="Poster Image">
+                </td>
+           </tr>
+    </table>
+    Recommendations TMDB: <br/>
+    <table>
+            <tr>
+                <th>Title</th>
+                <th>Plot</th>
+                <th>Image</th>
+            </tr>
+            {% for recommendation in recommendations %}
+            <tr>
+                <td>{{ recommendation.data.title }}</td>
+                <td>{{ recommendation.data.description }}</td>
+                <td>
+                    <img src="{% static recommendation.poster %}" alt="Poster Image">
+                </td>
+           </tr>
+        {% endfor %}
+    </table>
+    </div>
+{% else %}
+    <p>No recommendations are available.</p>
+{% endif %}
