@@ -10,8 +10,9 @@ if __name__ == "__main__":
     directory = os.fsencode(movie_files_path)
     conn = psycopg2.connect(user="postgres",
                      password="password",
-                     host="192.168.1.83",
+                     # host="192.168.1.83",
                      # host="143.205.185.110",
+                     host="143.205.193.235",
                      port="5432",
                      database="movies_recommender")
     cur = conn.cursor()
@@ -61,7 +62,7 @@ if __name__ == "__main__":
                 to_store["duration"] = movie["movielens"]["runtime"]
                 trailers = movie["movielens"]["youtubeTrailerIds"]
                 if trailers is not None and len(trailers) > 0:
-                    to_store["trailer_url"] = "https://www.youtube.com/watch?v={}".format(trailers[0])
+                    to_store["trailer_url"] = trailers[0]
 
             else:
                 print("not Adding movie: {}".format(id))

@@ -14,6 +14,7 @@ class Movie(models.Model):
     release_date = models.DateField()
     trailer_url = models.TextField()
     recommendations = models.JSONField()
+    ratings = models.JSONField()
 
     class Meta:
         db_table = 'movie_infos'

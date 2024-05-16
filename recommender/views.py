@@ -15,13 +15,12 @@ def results(request, movie_id):
     template = loader.get_template('recommender/movie_info.html')
 
     movie = Movie.objects.get(id=movie_id)
-    recommendations = list(Movie.objects.filter(tmdb_id__in=movie.recommendations['tmdb'][:5]))
-    print(movie)
-    print(movie.recommendations['tmdb'][:5])
-    print(recommendations)
+    tmdb_recommendations = list(Movie.objects.filter(tmdb_id__in=movie.recommendations['tmdb'][:5]))
     context = {
         'movie': prepare_movie(movie),
-        'recommendations': [prepare_movie(recom) for recom in recommendations]
+        'recommendations': {
+            "tmdb": [prepare_movie(recom) for recom in tmdb_recommendations]
+        }
     }
 
     return HttpResponse(template.render(context, request))
