@@ -4,7 +4,9 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 
+from recommender.Serializers import MovieSerializer
 from recommender.models import Movie
+from rest_framework import viewsets, generics
 
 
 def index(request):
@@ -25,8 +27,24 @@ def results(request, movie_id):
 
     return HttpResponse(template.render(context, request))
 
+
 def prepare_movie(movie):
     return {
         'data': movie,
         'poster': "posters/{}.jpg".format(movie.id)
     }
+
+
+class MovieNamesViewSet(generics.ListAPIView):
+    """
+    API endpoint that allows to query movies
+    """
+
+    serializer_class = MovieSerializer
+
+    def get_queryset(self):
+        queryset = Movie.objects.all().order_by('-title')
+        title = self.request.query_params.get('title')
+        if title is not None and queryset is not None:
+            queryset = queryset.filter(title__icontains=title)
+        return queryset
