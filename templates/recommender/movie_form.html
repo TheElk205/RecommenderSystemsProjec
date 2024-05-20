@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+body {
+	{#margin:0;#}
+    background: linear-gradient(to bottom right, #bbbcd9, #676779);
+
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+form p label {
+    visibility: hidden;
+}
+
+form p span:first-of-type {
+    width: 400px!important;
+}
+
+form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+form input {
+    width: 100px;
+    height: 40px;
+    background-color: red;
+}
+
+</style>
+<head>
+    <title>Select a movie</title>
+    {{ form.media.css }}
+    <style>
+        input, select {width: 50%}
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Select a movie</h1>
+        <br />
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit">
+        </form>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        {{ form.media.js }}
+    </div>
+</body>
+</html>

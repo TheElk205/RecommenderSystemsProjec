@@ -20,4 +20,4 @@ class Movie(models.Model):
         db_table = 'movie_infos'
 
     def __str__(self):
-        return "id: {}, title: {}".format(self.id, self.title)
+        return "{}".format(self.title)

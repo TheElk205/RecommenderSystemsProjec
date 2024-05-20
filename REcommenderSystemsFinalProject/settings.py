@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'mathfilters',
+    'django_select2',
     'rest_framework',
     'recommender.apps.RecommenderConfig',
     'django.contrib.admin',
@@ -90,8 +91,8 @@ DATABASES = {
         "USER": "postgres",
         "PASSWORD": "password",
         # "HOST": "143.205.185.110",
-        "HOST": "143.205.193.235",
-        # "HOST": "192.168.1.83",
+        # "HOST": "143.205.193.235",
+        "HOST": "192.168.1.83",
         "PORT": "5432",
         'OPTIONS': {
         'options': '-c search_path=data,public'

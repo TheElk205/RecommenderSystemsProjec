@@ -1,9 +1,11 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
+from django.views import generic
 
+from recommender import models, forms
 from recommender.Serializers import MovieSerializer
 from recommender.models import Movie
 from rest_framework import viewsets, generics
@@ -48,3 +50,26 @@ class MovieNamesViewSet(generics.ListAPIView):
         if title is not None and queryset is not None:
             queryset = queryset.filter(title__icontains=title)
         return queryset
+
+
+class MovieSelectView(generic.FormView):
+    model = models.Movie
+    form_class = forms.MovieSelectForm
+    success_url = "/test"
+
+    template_name = "recommender/movie_form.html"
+
+    def form_valid(self, form):
+        print("Got form: ")
+        print(form.data["title"])
+        url = "{}".format(form.data["title"])
+        print("URL to return: {}".format(url))
+        return HttpResponseRedirect(url)
+
+    def get_success_url(self):
+        print("Success URL")
+        print(self.title)
+        if 'id' in self.kwargs:
+            return "/{}".format(self.kwargs['id'])
+        return "/"
+
