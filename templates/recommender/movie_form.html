@@ -3,8 +3,10 @@
 <style>
 body {
 	{#margin:0;#}
-    background: linear-gradient(to bottom right, #bbbcd9, #676779);
-
+    {#background: linear-gradient(to bottom right, #bbbcd9, #676779);#}
+    background: #3E3E3E;
+    min-height: 100%;
+    height: 100vh;
 }
 
 .content {
@@ -31,11 +33,42 @@ form {
 }
 
 form input {
-    width: 100px;
-    height: 40px;
-    background-color: red;
+    width: 150px;
+    height: 46px;
+    background-color: #CD2F2F;
+    border-radius: 5px;
+    margin-left: 20px;
+    border-color: transparent;
+    color: white;
 }
 
+h1 {
+    color: white;
+}
+
+p span {
+    height: 46px;
+}
+
+p span span {
+    height: 46px;
+}
+
+p span span span {
+    height: 100%;
+}
+
+.select2-container .select2-selection--single {
+    height: 46px!important;
+}
+
+.select2-selection__arrow {
+    height: 46px!important;
+}
+
+.select2-selection__rendered {
+    line-height: 44px!important;
+}
 </style>
 <head>
     <title>Select a movie</title>
@@ -47,7 +80,6 @@ form input {
 <body>
     <div class="content">
         <h1>Select a movie</h1>
-        <br />
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}

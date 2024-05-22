@@ -10,7 +10,8 @@ if __name__ == "__main__":
     directory = os.fsencode(movie_files_path)
     conn = psycopg2.connect(user="postgres",
                      password="password",
-                     host="192.168.1.83",
+                     # host="192.168.1.83",
+                     host="143.205.184.36",
                      # host="143.205.185.110",
                      # host="143.205.193.235",
                      port="5432",

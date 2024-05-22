@@ -186,6 +186,50 @@ a:visited {
     }
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: Inter, sans-serif;
+}
+
+.movie-container {
+    display: flex;
+    flex-direction: row;
+    padding: 100px;
+    background: #3E3E3E;
+    color: white;
+}
+
+.movie-details {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.movie-title {
+    font-size: 50px;
+}
+
+.movie-poster {
+    height: 390px;
+    min-width: 293px;
+    display: flex;
+}
+
+.movie-poster > img {
+    height: 100%;
+    margin: auto;
+}
+
+.watch-trailer-button {
+    width: 150px;
+    height: 46px;
+    background-color: #CD2F2F;
+    border-radius: 5px;
+    border-color: transparent;
+    color: white;
+}
 </style>
 
 <script>
@@ -201,7 +245,41 @@ function getMovies(date){
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% load mathfilters %}
 {%  if movie %}
-    <body id="iau9">
+    <body>
+        <div class="movie-container">
+            <div class="movie-poster">
+                <img src="{% static movie.poster %}" alt="Poster Image">
+            </div>
+            <div class="movie-details">
+                <div class="movie-title">{{ movie.data.title }}</div>
+                <div >{{ movie.data.release_date }} - {{ movie.data.mpaa }} - {{ movie.data.duration }}</div>
+                <div>
+                    {{ movie.data.description }}
+                </div>
+                <div class="movie-rating">
+                    {% with ''|center:5 as range %}
+                        {% for _ in range %}
+                          {% if forloop.counter < movie.data.ratings.movielens %}
+                            <i class="fa fa-star"></i>
+                          {% endif %}
+                          {% if movie.data.ratings.movielens|sub:forloop.counter < 0.5 and  movie.data.ratings.movielens|sub:forloop.counter > 0 %}
+                              <i class="fa fa-star-o"></i>
+                          {% endif %}
+                          {% if movie.data.ratings.movielens|sub:forloop.counter > 0.5 and movie.data.ratings.movielens|sub:forloop.counter < 1 %}
+                              <i class="fa fa-star-half-full"></i>
+                          {% endif %}
+                          {% if forloop.counter|sub:1 > movie.data.ratings.movielens %}
+                            <i class="fa fa-star-o"></i>
+                          {% endif %}
+                        {% endfor %}
+                        {%  endwith %}
+                </div>
+                <div>
+                    <button class="watch-trailer-button" type="button">Watch trailer</button>
+                </div>
+            </div>
+
+        </div>
   <section class="gjs-section" id="iqum">
     <div class="gjs-container">
       <div class="gjs-grid-row" id="ign2">

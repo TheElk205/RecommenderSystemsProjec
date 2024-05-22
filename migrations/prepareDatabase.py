@@ -14,7 +14,8 @@ if __name__ == '__main__':
     flyway_config_command = flyway_conf.format(
         # host="143.205.193.235",
         # host="143.205.185.110",
-        host="192.168.1.83",
+        host="143.205.184.36",
+        # host="192.168.1.83",
         port=5432,
         databasename="movies_recommender",
         user="postgres",
