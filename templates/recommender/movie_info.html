@@ -1,34 +1,5 @@
 {% load static %}
 <style>
-.angry-grid {
-   display: grid;
-
-   grid-template-rows: 1fr 1fr 1fr;
-   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-
-   gap: 0px;
-   height: 100%;
-
-}
-
-#selected-information {
-    text-align: center;
-    background-color: #B77DBB;
-    grid-row-start: 1;
-    grid-column-start: 1;
-
-    grid-row-end: 2;
-    grid-column-end: 2;
-}
-
-#selected-description {
-    background-color: #F6B57E;
-    grid-row-start: 1;
-    grid-column-start: 2;
-
-    grid-row-end: 2;
-    grid-column-end: 6;
-}
 
 * {
 	box-sizing:border-box;
@@ -36,39 +7,23 @@
 body {
 	margin:0;
     background: linear-gradient(to bottom right, #bbbcd9, #676779);
+    display: flex;
+    flex-direction: column;
+    align-content: center;
 }
-#iau9 {
-	padding-top:0px;
-	padding-right:0px;
-	padding-bottom:0px;
-	padding-left:0px;
+
+.youtube-iframe {
+    max-height: 100%;
 }
-.gjs-container {
-	width:90%;
-	margin:0 auto;
-	max-width:1200px;
+
+.movie-width-container {
+    background: #3E3E3E;
 }
-.gjs-section {
-	display:flex;
-	padding:50px 0;
+
+.recommendations-width-container {
+    background: #E5E5E5;
 }
-.gjs-grid-column {
-	flex:1 1 0%;
-	padding:5px 0;
-}
-.gjs-grid-row {
-	display:flex;
-	justify-content:flex-start;
-	align-items:stretch;
-	flex-direction:row;
-	min-height:auto;
-	padding:10px 0;
-    border: solid #000;
-    border-width: 1px 1px;
-    border-radius: 10px;
-    background: linear-gradient(to left, #55566a, #0f0f10);
-    color: white;
-}
+
 a:link {
   color: white;
   background-color: transparent;
@@ -81,109 +36,9 @@ a:visited {
   text-decoration: none;
 }
 
-#ibs3 {
-	flex:0 0 25%;
-	padding-top:5px;
-	padding-right:5px;
-	padding-bottom:0px;
-	padding-left:5px;
-	margin-top:0px;
-	margin-right:0px;
-	margin-bottom:0px;
-	margin-left:0px;
-}
-#ibs4 {
-	flex:0 0 20%;
-	padding-top:5px;
-	padding-right:5px;
-	padding-bottom:0px;
-	padding-left:5px;
-	margin-top:0px;
-	margin-right:0px;
-	margin-bottom:0px;
-	margin-left:0px;
-}
-#ikla {
-	padding:10px;
-	position:relative;
-	bottom:100px;
-}
-#izkf {
-	flex:1 1 0%;
-}
-#i6fm1 {
-	{#font-family:"Open Sans",Arial,sans-serif;#}
-	text-align:justify;
-	margin: 10px;
-	{#position:relative;#}
-	{#bottom:126px;#}
-    /* 1 pixel black shadow to left, top, right and bottom */
-    color: white
-}
-#title-recommended {
-	padding:10px;
-	font-family:Arial,Helvetica,sans-serif;
-    min-height: 75px;
-}
-#title-movie{
-	padding:10px;
-	font-family:Arial,Helvetica,sans-serif;
-}
-#iu05j {
-	color:black;
-	padding-top:0px;
-	padding-right:0px;
-	padding-bottom:0px;
-	padding-left:0px;
-    width: 100%
-}
-#itqy8 {
-	padding:10px;
-}
-#data-movie {
-	padding:10px;
-}
 #data-recommended
 {
     padding:10px;
-    min-height: 100px;
-}
-.gjs-image-box {
-	height:200px;
-	width:100%;
-}
-#ialkr {
-	{#background-image:url('https://i.imgur.com/5UjbpUe.jpeg');#}
-	background-size:contain;
-	background-position:center center;
-	background-attachment:scroll;
-	background-repeat:no-repeat;
-	height:421px;
-	position:static;
-	margin-top:0px;
-	margin-right:0px;
-	margin-bottom:0px;
-	margin-left:0px;
-	padding-top:0px;
-	padding-right:0px;
-	padding-bottom:0px;
-	padding-left:0px;
-	border-top-left-radius:14px;
-	border-top-right-radius:14px;
-	border-bottom-right-radius:14px;
-	border-bottom-left-radius:14px;
-}
-#ialkr {
-	{#background-image:url('https://i.imgur.com/5UjbpUe.jpeg');#}
-	background-size:contain;
-	background-position:center center;
-	background-attachment:scroll;
-	background-repeat:no-repeat;
-}
-@media (max-width:992px) {
-    .gjs-grid-row {
-        flex-direction: column;
-    }
 }
 
 body {
@@ -196,8 +51,9 @@ body {
     display: flex;
     flex-direction: row;
     padding: 100px;
-    background: #3E3E3E;
     color: white;
+    max-width: 1200px;
+    margin: auto;
 }
 
 .movie-details {
@@ -205,6 +61,68 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+.recommendations-container {
+    display: flex;
+    flex-direction: column;
+    padding: 100px;
+    background: #E5E5E5;
+    color: black;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.recommendation-container {
+    {#display: flex;#}
+    {#flex-direction: column;#}
+}
+
+.recommendations {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap:nowrap;
+    gap:56px;
+    box-sizing:border-box;
+    {#min-width: 0;#}
+    {#max-width: 100px;#}
+}
+
+.recommendation {
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 10%;
+    flex-basis: 100%;
+}
+
+.recommendation > img {
+    width: 100%;
+    margin: auto;
+}
+
+.recommendations-container > h1 {
+    font-size: 40px;
+}
+
+
+.recommendation-title {
+    min-width: 40%;
+    {#width: 100%;#}
+    height: 50px;
+}
+.recommendation-title > a {
+    font-size: 26px;
+    color: black;
+    overflow: hidden;
+}
+
+.recommendation-title > a:visited {
+    font-size: 26px;
+    color: black;
 }
 
 .movie-title {
@@ -230,29 +148,118 @@ body {
     border-color: transparent;
     color: white;
 }
+
+.watch-trailer-button:hover {
+  cursor: pointer;
+}
+
+/* The Modal (background) */
+.trailer-modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
 </style>
 
 <script>
-function getMovies(date){
-  $.ajax({
-    type : "GET", 
-    url: "localhost:8000/recommender/movies/",
-    });
+// Get the modal
+var modal = document.getElementById("trailer-modal");
 
-    return false;
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal
+function openModal (youtube_url) {
+    console.log("opening modal")
+    modal = document.getElementById("trailer-modal");
+    span = document.getElementsByClassName("close")[0];
+    modal.style.display = "block";
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+        var iframe = document.getElementById("youtube-iframe")
+        iframe.innerHTML = '';
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+        var iframe = document.getElementById("youtube-iframe")
+        iframe.innerHTML = '';
+      }
+    }
+    var iframe = document.getElementById("youtube-iframe")
+    iframe.innerHTML = "<iframe width=\"100%\" \
+                    height=\"90%\" \
+                    src=\"https://www.youtube.com/embed/" + youtube_url + "\"\
+                    title=\"Trailer\" \
+                    frameborder=\"0\" \
+                    allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" \
+                    referrerpolicy=\"strict-origin-when-cross-origin\" \
+                    allowfullscreen> \
+                </iframe>"
+    {#iframe.innerHTML="<iframe> </iframe>"#}
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
 }
 </script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% load mathfilters %}
 {%  if movie %}
     <body>
+    <div class="max-width-container movie-width-container">
         <div class="movie-container">
             <div class="movie-poster">
                 <img src="{% static movie.poster %}" alt="Poster Image">
             </div>
             <div class="movie-details">
                 <div class="movie-title">{{ movie.data.title }}</div>
-                <div >{{ movie.data.release_date }} - {{ movie.data.mpaa }} - {{ movie.data.duration }}</div>
+                <div>Released: {{ movie.data.release_date }}</div>
+                <div>Youth rating: {{ movie.data.mpaa }}</div>
+                <div>Duration: {{ movie.data.duration }} minutes</div>
                 <div>
                     {{ movie.data.description }}
                 </div>
@@ -275,127 +282,61 @@ function getMovies(date){
                         {%  endwith %}
                 </div>
                 <div>
-                    <button class="watch-trailer-button" type="button">Watch trailer</button>
+                    <button onclick="openModal('{{ movie.data.trailer_url }}')" class="watch-trailer-button" type="button">Watch trailer</button>
                 </div>
             </div>
 
         </div>
-  <section class="gjs-section" id="iqum">
-    <div class="gjs-container">
-      <div class="gjs-grid-row" id="ign2">
-        <div class="gjs-grid-column" id="ibs3">
-          <div id="title-movie">{{ movie.data.title }}</div>
-          <div id="data-movie">{{ movie.data.release_date }} - {{ movie.data.mpaa }} - {{ movie.data.duration }}</div>
-          <div id="i3q8l">
-          {% with ''|center:5 as range %}
-              {% for _ in range %}
-                  {% if forloop.counter < movie.data.ratings.movielens %}
-                    <i class="fa fa-star"></i>
-                  {% endif %}
-                  {% if movie.data.ratings.movielens|sub:forloop.counter < 0.5 and  movie.data.ratings.movielens|sub:forloop.counter > 0 %}
-                      <i class="fa fa-star-o"></i>
-                  {% endif %}
-                  {% if movie.data.ratings.movielens|sub:forloop.counter > 0.5 and movie.data.ratings.movielens|sub:forloop.counter < 1 %}
-                      <i class="fa fa-star-half-full"></i>
-                  {% endif %}
-                  {% if forloop.counter|sub:1 > movie.data.ratings.movielens %}
-                    <i class="fa fa-star-o"></i>
-                  {% endif %}
-              {% endfor %}
-          {%  endwith %}
-              </div>
-            <img  id="iu05j" src="{% static movie.poster %}" alt="Poster Image">
-            <div id="itqy8">
-
-{#                <a href="{{ movie.data.trailer_url }}">Watch trailer</a>#}
-            </div>
+    </div>
+    <div class="max-width-container recommendations-width-container">
+        <div class="recommendations-container">
+            <h1>Recommendations</h1>
+            <div class="recommendation-container">
+                <h1>TMDB</h1>
+                <div class="recommendations">
+                    {% for recommendation in recommendations.tmdb %}
+                    <div class="recommendation">
+{#                        <div class="recommendation-title"><a href="">textasdfasdfasdfasdfasdfasdfsadfasdfasdfasdfasdfasf</a></div>#}
+                        <div title="{{ recommendation.data.title }}" class="recommendation-title"><a href="/recommender/{{ recommendation.data.id }}" >{{ recommendation.data.title }}</a></div>
+                        <div class="movie-rating">
+                            {% with ''|center:5 as range %}
+                                {% for _ in range %}
+                                  {% if forloop.counter < recommendation.data.ratings.movielens %}
+                                    <i class="fa fa-star"></i>
+                                  {% endif %}
+                                  {% if movie.data.ratings.movielens|sub:forloop.counter < 0.5 and  recommendation.data.ratings.movielens|sub:forloop.counter > 0 %}
+                                      <i class="fa fa-star-o"></i>
+                                  {% endif %}
+                                  {% if movie.data.ratings.movielens|sub:forloop.counter > 0.5 and recommendation.data.ratings.movielens|sub:forloop.counter < 1 %}
+                                      <i class="fa fa-star-half-full"></i>
+                                  {% endif %}
+                                  {% if forloop.counter|sub:1 > recommendation.data.ratings.movielens %}
+                                    <i class="fa fa-star-o"></i>
+                                  {% endif %}
+                                {% endfor %}
+                                {%  endwith %}
+                        </div>
+                        <img title="{{ recommendation.data.description }}" src="{% static recommendation.poster %}" alt="Poster Image">
+                        <div>
+                            <button style="width: 100%; margin-top: 10px" onclick="openModal('{{ recommendation.data.trailer_url }}')" class="watch-trailer-button" type="button">Watch trailer</button>
+                        </div>
+                    </div>
+                    {% endfor %}
         </div>
-        <div class="gjs-grid-column" id="izkf">
-          <div id="ikla"></div>
-          <div class="gjs-image-box" id="ialkr">
-              <iframe
-                        width="100%"
-                        height="100%"
-                        src="https://www.youtube.com/embed/{{ movie.data.trailer_url }}"
-                        title="Trailer"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerpolicy="strict-origin-when-cross-origin"
-                        allowfullscreen>
-                </iframe>
-          </div>
-          <span id="i6fm1">{{ movie.data.description }}</span>
-        </div>
-      </div>
-        <h1>TMDB Recommendations</h1>
-        <div class="gjs-grid-row" id="ign2">
-            {% for recommendation in recommendations.tmdb %}
-            <div class="gjs-grid-column" id="ibs4">
-                <div id="title-recommended"><a href="/recommender/{{ recommendation.data.id }}" >{{ recommendation.data.title }}</a></div>
-              <div id="data-recommended">{{ recommendation.data.release_date }} - {{ recommendation.data.mpaa }} - {{ recommendation.data.duration }}</div>
-                <img  id="iu05j" src="{% static recommendation.poster %}" alt="Poster Image">
-                <div id="itqy8">
-                    <a href="{{ recommendation.data.trailer_url }}">Watch trailer</a></div>
             </div>
-            {% endfor %}
         </div>
     </div>
-  </section>
-  <section class="gjs-section" id="i322">
-    <div class="gjs-container"></div>
-  </section>
+    <!-- The Modal -->
+    <div id="trailer-modal" class="trailer-modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="youtube-iframe" class="youtube-iframe">
+
+            </div>
+        </div>
+
+    </div>
 </body>
 {%  endif %}
-{% if movie %}
-    <div class="angry-grid">
-        <div id="selected-information">
-            <img src="{% static movie.poster %}" alt="Poster Image">
-            <div>{{ movie.data.title }}</div>
-        </div>
-        <div id="selected-description">{{ movie.data.description }}</div>
-        {% for recommendation in recommendations %}
-            <div style="text-align: center; grid-row-start: 2; grid-row-end: 3; grid-column-start: {{ forloop.counter }}; grid-column-end: {{ forloop.counter|add:1 }}">
-            <img src="{% static recommendation.poster %}" alt="Poster Image">
-            <div>{{ recommendation.data.title }}</div>
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
-
-{% if movie %}
-    <div class="table_component" role="region" tabindex="0">
-        <table>
-            <tr>
-                <th>Title</th>
-                <th>Plot</th>
-                <th>Image</th>
-            </tr>
-            <tr>
-                <td>{{ movie.data.title }}</td>
-                <td>{{ movie.data.description }}</td>
-                <td>
-                    <img src="{% static movie.poster %}" alt="Poster Image">
-                </td>
-           </tr>
-    </table>
-    Recommendations TMDB: <br/>
-    <table>
-            <tr>
-                <th>Title</th>
-                <th>Plot</th>
-                <th>Image</th>
-            </tr>
-            {% for recommendation in recommendations %}
-            <tr>
-                <td>{{ recommendation.data.title }}</td>
-                <td>{{ recommendation.data.description }}</td>
-                <td>
-                    <img src="{% static recommendation.poster %}" alt="Poster Image">
-                </td>
-           </tr>
-        {% endfor %}
-    </table>
-    </div>
-{% else %}
-    <p>No recommendations are available.</p>
-{% endif %}
