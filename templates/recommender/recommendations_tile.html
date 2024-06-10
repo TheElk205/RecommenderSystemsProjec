@@ -1,0 +1,35 @@
+{% load mathfilters %}
+{% load static %}
+<div class="recommendation-container">
+    <h1>{{ title }}</h1>
+    <div class="recommendations">
+
+        {% for recommendation in recommendations %}
+        <div class="recommendation">
+{#                        <div class="recommendation-title"><a href="">textasdfasdfasdfasdfasdfasdfsadfasdfasdfasdfasdfasf</a></div>#}
+            <div title="{{ recommendation.data.title }}" class="recommendation-title"><a href="/recommender/{{ recommendation.data.id }}" >{{ recommendation.data.title }}</a></div>
+            <div class="movie-rating">
+
+{#            {{ recommendation.data.ratings.movielens }}#}
+                {% with ''|center:5 as range %}
+                    {% for _ in range %}
+                      {% if forloop.counter < recommendation.data.ratings.movielens %}
+                        <i class="fa fa-star"></i>
+                      {% elif recommendation.data.ratings.movielens|sub:forloop.counter < 0.5 and  recommendation.data.ratings.movielens|sub:forloop.counter > 0 %}
+                          <i class="fa fa-star-o"></i>
+                      {% elif recommendation.data.ratings.movielens|sub:forloop.counter > 0.5 and recommendation.data.ratings.movielens|sub:forloop.counter < 1 %}
+                          <i class="fa fa-star-half-full"></i>
+                      {% elif forloop.counter > recommendation.data.ratings.movielens %}
+                        <i class="fa fa-star-o"></i>
+                      {% endif %}
+                    {% endfor %}
+                    {%  endwith %}
+            </div>
+            <img title="{{ recommendation.data.description }}" src="{% static recommendation.poster %}" alt="Poster Image">
+            <div>
+                <button style="width: 100%; margin-top: 10px" onclick="openModal('{{ recommendation.data.trailer_url }}')" class="watch-trailer-button" type="button">Watch trailer</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>

@@ -18,12 +18,26 @@ def index(request):
 def results(request, movie_id):
     template = loader.get_template('recommender/movie_info.html')
 
-    movie = Movie.objects.get(id=movie_id)
+    try:
+        movie = Movie.objects.get(id=movie_id)
+    except Movie.DoesNotExist:
+        context = {}
+        return HttpResponse(template.render(context, request))
+
     tmdb_recommendations = list(Movie.objects.filter(tmdb_id__in=movie.recommendations['tmdb'][:5]))
+    cosine_recommendations = list(Movie.objects.filter(id__in=movie.recommendations['cosine'][:5]))
+    cosine_reduced_recommendations = list(Movie.objects.filter(id__in=movie.recommendations['cosine_reduced'][:5]))
+    jaccard_recommendations = list(Movie.objects.filter(id__in=movie.recommendations['jaccard'][:5]))
+    jaccard_tag_recommendations = list(Movie.objects.filter(id__in=movie.recommendations['jaccard_tag'][:5]))
+    print(cosine_recommendations)
     context = {
         'movie': prepare_movie(movie),
         'recommendations': {
-            "tmdb": [prepare_movie(recom) for recom in tmdb_recommendations]
+            "tmdb": [prepare_movie(recom) for recom in tmdb_recommendations],
+            "cosine": [prepare_movie(recom) for recom in cosine_recommendations],
+            "cosine_reduced": [prepare_movie(recom) for recom in cosine_reduced_recommendations],
+            "jaccard": [prepare_movie(recom) for recom in jaccard_recommendations],
+            "jaccard_tag": [prepare_movie(recom) for recom in jaccard_tag_recommendations],
         }
     }
 

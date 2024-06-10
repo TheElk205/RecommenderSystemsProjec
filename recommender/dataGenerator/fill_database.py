@@ -2,18 +2,25 @@ import json
 import os
 import psycopg2
 import pandas as pd
+from RecommenderSystemsFinalProject.settings import DATABASES
 
 movie_files_path = "./extracted_content_ml-latest"
+cosine_path = "./cosine_full_descriptions_english_reduced.csv"
+# cosine_path = "./cosine_full.csv"
+cosine_reduced_path = "./cosine_full_descriptions.csv"
+jaccard_path = "./jaccard_similarity.csv"
+jaccard_tags_path = "./tags_jaccard_similarity_final_no_duplicates.csv"
 
 if __name__ == "__main__":
     print("Generating database")
     directory = os.fsencode(movie_files_path)
+    cosine_data = pd.read_csv(cosine_path, index_col=0, header=None)
+    cosine_reduced_data = pd.read_csv(cosine_reduced_path, index_col=0, header=None)
+    jaccard_data = pd.read_csv(jaccard_path, index_col=0, header=None)
+    jaccard_tags_data = pd.read_csv(jaccard_tags_path, index_col=0, header=None)
     conn = psycopg2.connect(user="postgres",
                      password="password",
-                     # host="192.168.1.83",
-                     host="143.205.184.36",
-                     # host="143.205.185.110",
-                     # host="143.205.193.235",
+                     host=DATABASES["default"]["HOST"],
                      port="5432",
                      database="movies_recommender")
     cur = conn.cursor()
@@ -64,7 +71,32 @@ if __name__ == "__main__":
                 trailers = movie["movielens"]["youtubeTrailerIds"]
                 if trailers is not None and len(trailers) > 0:
                     to_store["trailer_url"] = trailers[0]
-
+                # Cosine
+                try:
+                    data = list(cosine_data.loc[int(movielens_id)])
+                    to_store["recommendations"]["cosine"] = data
+                except KeyError:
+                    print("No cosine similarities for movie: {}".format(movielens_id))
+                    to_store["recommendations"]["cosine"] = []
+                try:
+                    data = list(cosine_reduced_data.loc[int(movielens_id)])
+                    to_store["recommendations"]["cosine_reduced"] = data
+                except KeyError:
+                    print("No reduced cosine similarities for movie: {}".format(movielens_id))
+                    to_store["recommendations"]["cosine_reduced"] = []
+                # Jaccard
+                try:
+                    data = list(jaccard_data.loc[int(movielens_id)])
+                    to_store["recommendations"]["jaccard"] = data
+                except KeyError:
+                    print("No jaccard similarities for movie: {}".format(movielens_id))
+                    to_store["recommendations"]["jaccard"] = []
+                try:
+                    data = list(jaccard_tags_data.loc[int(movielens_id)])
+                    to_store["recommendations"]["jaccard_tag"] = data
+                except KeyError:
+                    print("No jaccard_tag similarities for movie: {}".format(movielens_id))
+                    to_store["recommendations"]["jaccard_tag"] = []
             else:
                 print("not Adding movie: {}".format(id))
                 continue

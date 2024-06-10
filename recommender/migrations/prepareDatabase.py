@@ -1,6 +1,8 @@
 import os
 import subprocess
 
+from RecommenderSystemsFinalProject.settings import DATABASES
+
 flyway_conf = '''flyway.url=jdbc:postgresql://{host}:{port}/{databasename}
 flyway.user={user}
 flyway.password={password}
@@ -12,10 +14,7 @@ flyway_docker_command = 'docker run --rm -v {working_dir}:/flyway/sql -v {workin
 if __name__ == '__main__':
     print("Executing migrations")
     flyway_config_command = flyway_conf.format(
-        # host="143.205.193.235",
-        # host="143.205.185.110",
-        host="143.205.184.36",
-        # host="192.168.1.83",
+        host=DATABASES["default"]["HOST"],
         port=5432,
         databasename="movies_recommender",
         user="postgres",

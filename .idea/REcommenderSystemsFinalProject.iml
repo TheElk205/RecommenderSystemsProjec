@@ -19,9 +19,17 @@
       <excludeFolder url="file://$MODULE_DIR$/dataGenerator/images_movies" />
       <excludeFolder url="file://$MODULE_DIR$/recommender/static" />
       <excludeFolder url="file://$MODULE_DIR$/static" />
+      <excludeFolder url="file://$MODULE_DIR$/recommender/dataGenerator/extracted_content_ml-latest" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="PyNamespacePackagesService">
+    <option name="namespacePackageFolders">
+      <list>
+        <option value="$MODULE_DIR$/recommender/dataGenerator" />
+      </list>
+    </option>
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />

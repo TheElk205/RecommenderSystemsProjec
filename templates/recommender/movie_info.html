@@ -96,6 +96,7 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 10%;
+    max-width: 300px;
     flex-basis: 100%;
 }
 
@@ -265,21 +266,18 @@ window.onclick = function(event) {
                 </div>
                 <div class="movie-rating">
                     {% with ''|center:5 as range %}
-                        {% for _ in range %}
-                          {% if forloop.counter < movie.data.ratings.movielens %}
-                            <i class="fa fa-star"></i>
-                          {% endif %}
-                          {% if movie.data.ratings.movielens|sub:forloop.counter < 0.5 and  movie.data.ratings.movielens|sub:forloop.counter > 0 %}
-                              <i class="fa fa-star-o"></i>
-                          {% endif %}
-                          {% if movie.data.ratings.movielens|sub:forloop.counter > 0.5 and movie.data.ratings.movielens|sub:forloop.counter < 1 %}
-                              <i class="fa fa-star-half-full"></i>
-                          {% endif %}
-                          {% if forloop.counter|sub:1 > movie.data.ratings.movielens %}
-                            <i class="fa fa-star-o"></i>
-                          {% endif %}
-                        {% endfor %}
-                        {%  endwith %}
+                    {% for _ in range %}
+                      {% if forloop.counter < movie.data.ratings.movielens %}
+                        <i class="fa fa-star"></i>
+                      {% elif movie.data.ratings.movielens|sub:forloop.counter < 0.5 and  movie.data.ratings.movielens|sub:forloop.counter > 0 %}
+                          <i class="fa fa-star-o"></i>
+                      {% elif movie.data.ratings.movielens|sub:forloop.counter > 0.5 and movie.data.ratings.movielens|sub:forloop.counter < 1 %}
+                          <i class="fa fa-star-half-full"></i>
+                      {% elif forloop.counter > movie.data.ratings.movielens %}
+                        <i class="fa fa-star-o"></i>
+                      {% endif %}
+                    {% endfor %}
+                    {%  endwith %}
                 </div>
                 <div>
                     <button onclick="openModal('{{ movie.data.trailer_url }}')" class="watch-trailer-button" type="button">Watch trailer</button>
@@ -291,39 +289,11 @@ window.onclick = function(event) {
     <div class="max-width-container recommendations-width-container">
         <div class="recommendations-container">
             <h1>Recommendations</h1>
-            <div class="recommendation-container">
-                <h1>TMDB</h1>
-                <div class="recommendations">
-                    {% for recommendation in recommendations.tmdb %}
-                    <div class="recommendation">
-{#                        <div class="recommendation-title"><a href="">textasdfasdfasdfasdfasdfasdfsadfasdfasdfasdfasdfasf</a></div>#}
-                        <div title="{{ recommendation.data.title }}" class="recommendation-title"><a href="/recommender/{{ recommendation.data.id }}" >{{ recommendation.data.title }}</a></div>
-                        <div class="movie-rating">
-                            {% with ''|center:5 as range %}
-                                {% for _ in range %}
-                                  {% if forloop.counter < recommendation.data.ratings.movielens %}
-                                    <i class="fa fa-star"></i>
-                                  {% endif %}
-                                  {% if movie.data.ratings.movielens|sub:forloop.counter < 0.5 and  recommendation.data.ratings.movielens|sub:forloop.counter > 0 %}
-                                      <i class="fa fa-star-o"></i>
-                                  {% endif %}
-                                  {% if movie.data.ratings.movielens|sub:forloop.counter > 0.5 and recommendation.data.ratings.movielens|sub:forloop.counter < 1 %}
-                                      <i class="fa fa-star-half-full"></i>
-                                  {% endif %}
-                                  {% if forloop.counter|sub:1 > recommendation.data.ratings.movielens %}
-                                    <i class="fa fa-star-o"></i>
-                                  {% endif %}
-                                {% endfor %}
-                                {%  endwith %}
-                        </div>
-                        <img title="{{ recommendation.data.description }}" src="{% static recommendation.poster %}" alt="Poster Image">
-                        <div>
-                            <button style="width: 100%; margin-top: 10px" onclick="openModal('{{ recommendation.data.trailer_url }}')" class="watch-trailer-button" type="button">Watch trailer</button>
-                        </div>
-                    </div>
-                    {% endfor %}
-        </div>
-            </div>
+{#            {% include "recommender/recommendations_tile.html" with title="TMDB" recommendations=recommendations.tmdb %}#}
+            {% include "recommender/recommendations_tile.html" with title="Jaccard" recommendations=recommendations.jaccard %}
+            {% include "recommender/recommendations_tile.html" with title="Jaccard Tags" recommendations=recommendations.jaccard_tag %}
+            {% include "recommender/recommendations_tile.html" with title="Cosine Descriptions" recommendations=recommendations.cosine_reduced %}
+            {% include "recommender/recommendations_tile.html" with title="Cosine Descriptions english reduced" recommendations=recommendations.cosine %}
         </div>
     </div>
     <!-- The Modal -->
@@ -339,4 +309,6 @@ window.onclick = function(event) {
 
     </div>
 </body>
+    {% else %}
+    Given Movie ID does not exist.
 {%  endif %}

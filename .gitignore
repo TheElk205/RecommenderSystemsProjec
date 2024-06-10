@@ -1,1 +1,3 @@
 *.zip 
+/recommender/dataGenerator/extracted_content_ml-latest/
+/recommender/static/
