@@ -12,26 +12,17 @@ jaccard_path = "./jaccard_similarity.csv"
 jaccard_tags_path = "./tags_jaccard_similarity_final_no_duplicates.csv"
 movies_path = "./movies.csv"
 
-def create_genre_dict(movies_df):
-    genre_dict = {}
-    for _, row in movies_df.iterrows():
-        movie_id = row['movieId']
-        genres = row['genres'].split('|')
-        genre_dict[movie_id] = genres
-    return genre_dict
 
-def filter_recommendations(movie_id, genres_dict, recommendations):
-
-    if "Children" in genres_dict.get(movie_id,[]):
-        recommendations_new = [rec_id for rec_id in recommendations if "Children" in genres_dict.get(rec_id,[])]
-        for item in recommendations:
-            if len(recommendations_new) >= 5:
-                break
-            if item not in recommendations_new:
-                recommendations_new.append(item)
+def filter_recommendations(movie, data):
+    translation = {"G": 1, "M": 2, "R": 3, "X": 4}
+    recommendations_new = []
+    for element in data:
+        element_file_name = (str(element)+".json")
+        if "movielens" in element_file_name and translation[movie["movielens"]["mpaa"]] <= translation[element_file_name["movielens"]["mpaa"]]:
+            recommendations_new.append(element)
+    
     return recommendations_new
 
-genre_dict = create_genre_dict(movies_path)
 
 if __name__ == "__main__":
     print("Generating database")
@@ -97,14 +88,14 @@ if __name__ == "__main__":
                 # Cosine
                 try:
                     data = list(cosine_data.loc[int(movielens_id)])
-                    data = filter_recommendations(movielens_id , genre_dict, data)
+                    data = filter_recommendations(movie, data)
                     to_store["recommendations"]["cosine"] = data
                 except KeyError:
                     print("No cosine similarities for movie: {}".format(movielens_id))
                     to_store["recommendations"]["cosine"] = []
                 try:
                     data = list(cosine_reduced_data.loc[int(movielens_id)])
-                    data = filter_recommendations(movielens_id , genre_dict, data)
+                    data = filter_recommendations(movie, data)
                     to_store["recommendations"]["cosine_reduced"] = data
                 except KeyError:
                     print("No reduced cosine similarities for movie: {}".format(movielens_id))
@@ -112,14 +103,14 @@ if __name__ == "__main__":
                 # Jaccard
                 try:
                     data = list(jaccard_data.loc[int(movielens_id)])
-                    data = filter_recommendations(movielens_id , genre_dict, data)
+                    data = filter_recommendations(movie, data)
                     to_store["recommendations"]["jaccard"] = data
                 except KeyError:
                     print("No jaccard similarities for movie: {}".format(movielens_id))
                     to_store["recommendations"]["jaccard"] = []
                 try:
                     data = list(jaccard_tags_data.loc[int(movielens_id)])
-                    data = filter_recommendations(movielens_id , genre_dict, data)
+                    data = filter_recommendations(movie, data)
                     to_store["recommendations"]["jaccard_tag"] = data
                 except KeyError:
                     print("No jaccard_tag similarities for movie: {}".format(movielens_id))
