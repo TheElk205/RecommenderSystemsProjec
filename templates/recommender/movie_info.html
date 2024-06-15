@@ -292,13 +292,13 @@ window.onclick = function(event) {
 {#            {% include "recommender/recommendations_tile.html" with title="TMDB" recommendations=recommendations.tmdb %}#}
             {% include "recommender/recommendations_tile.html" with title="Jaccard" recommendations=recommendations.jaccard %}
             {% include "recommender/recommendations_tile.html" with title="Jaccard Tags" recommendations=recommendations.jaccard_tag %}
-            {% include "recommender/recommendations_tile.html" with title="Cosine Descriptions" recommendations=recommendations.cosine_reduced %}
-            {% include "recommender/recommendations_tile.html" with title="Cosine Descriptions english reduced" recommendations=recommendations.cosine %}
+            {% include "recommender/recommendations_tile.html" with title="Cosine Ratings" recommendations=recommendations.cosine_reduced %}
+            {% include "recommender/recommendations_tile.html" with title="Cosine (ratings) + Jaccard (genres)" recommendations=recommendations.cosine %}
         </div>
     </div>
     <!-- The Modal -->
     <div id="trailer-modal" class="trailer-modal">
-
+ 
         <!-- Modal content -->
         <div class="modal-content">
             <span class="close">&times;</span>

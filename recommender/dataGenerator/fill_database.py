@@ -5,9 +5,9 @@ import pandas as pd
 from RecommenderSystemsFinalProject.settings import DATABASES
 
 movie_files_path = "./extracted_content_ml-latest"
-cosine_path = "./cosine_full_descriptions_english_reduced.csv"
+cosine_path = "./cosine_jaccard.csv"
 # cosine_path = "./cosine_full.csv"
-cosine_reduced_path = "./cosine_full_descriptions.csv"
+cosine_reduced_path = "./cosine_full.csv"
 jaccard_path = "./jaccard_similarity.csv"
 jaccard_tags_path = "./tags_jaccard_similarity_final_no_duplicates.csv"
 

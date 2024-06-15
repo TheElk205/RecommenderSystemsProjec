@@ -5,5 +5,12 @@ We are building a movie recommender website. Everything is precalculated and the
 # Testing
 Create a non=persistent postgres database running in docker **NOT AT ALL SAVE FOR ANYTHING BUT TESTING**
 ```shell
-  docker run --name movie-databnase --rm -p 5432:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=movies_recommender postgres:16.3
+docker run --name movie-databnase --rm -p 5432:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=movies_recommender postgres:16.3
 ```
+
+Create postgres database with persistent storage. **TESTING ONLY**
+```shell
+mkdir -p ./postgres-data
+docker run --name movie-databnase --rm -p 5432:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=movies_recommender -v ./postgres-data:/var/lib/postgresql/data postgres:16.3
+```
+
