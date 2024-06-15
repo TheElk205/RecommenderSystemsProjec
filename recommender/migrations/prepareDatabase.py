@@ -13,12 +13,13 @@ flyway_docker_command = 'docker run --rm -v {working_dir}:/flyway/sql -v {workin
 
 if __name__ == '__main__':
     print("Executing migrations")
+    print("Docker host: {}".format(DATABASES["default"]["HOST"]))
     flyway_config_command = flyway_conf.format(
         host=DATABASES["default"]["HOST"],
         port=5432,
         databasename="movies_recommender",
-        user="postgres",
-        password="password",
+        user=DATABASES["default"]["USER"],
+        password=DATABASES["default"]["PASSWORD"],
         schema="public"
     )
     with open(flyway_config_file_path, 'w') as file:

@@ -18,8 +18,8 @@ if __name__ == "__main__":
     cosine_reduced_data = pd.read_csv(cosine_reduced_path, index_col=0, header=None)
     jaccard_data = pd.read_csv(jaccard_path, index_col=0, header=None)
     jaccard_tags_data = pd.read_csv(jaccard_tags_path, index_col=0, header=None)
-    conn = psycopg2.connect(user="postgres",
-                     password="password",
+    conn = psycopg2.connect(user=DATABASES["default"]["USER"],
+                     password=DATABASES["default"]["PASSWORD"],
                      host=DATABASES["default"]["HOST"],
                      port="5432",
                      database="movies_recommender")
