@@ -19,12 +19,12 @@ CREATE TABLE IF NOT EXISTS data.movie_infos (
     tmdb_id int,
     title TEXT not null,
     description TEXT,
-    release_date DATE, -- proper dataatype here?
+    release_date DATE, -- proper datatype here?
     duration INT,
     mpaa TEXT,
     poster TEXT, -- Will reference a file_storage object
     backdrop TEXT, -- Will reference a file_storage object
-    recommendations JSONB, -- e.g. soemthing like: { [{ label: "tmdb", recommended: [99, 1, 4, 5, 6] }] }
+    recommendations JSONB, -- e.g. something like: { [{ label: "tmdb", recommended: [99, 1, 4, 5, 6] }] }
     trailer_url TEXT,
     actors JSONB, -- Here will most probably be the normal input from tmdb
     genres JSONB, -- also here directly form tmd
