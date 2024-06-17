@@ -1,5 +1,6 @@
 *.zip 
-/recommender/dataGenerator/extracted_content_ml-latest/
+**/extracted_content_ml-latest/
+**/movie-lense-data
 /recommender/static/
 .env
 ignored

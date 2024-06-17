@@ -5,11 +5,11 @@ import pandas as pd
 from RecommenderSystemsFinalProject.settings import DATABASES
 
 movie_files_path = "./extracted_content_ml-latest"
-cosine_path = "./cosine_jaccard.csv"
+cosine_path = "generated_similarities/cosine_jaccard.csv"
 # cosine_path = "./cosine_full.csv"
-cosine_reduced_path = "./cosine_full.csv"
-jaccard_path = "./jaccard_similarity.csv"
-jaccard_tags_path = "./tags_jaccard_similarity_final_no_duplicates.csv"
+cosine_reduced_path = "generated_similarities/cosine_full.csv"
+jaccard_path = "generated_similarities/jaccard_similarity.csv"
+jaccard_tags_path = "generated_similarities/tags_jaccard_similarity_final_no_duplicates.csv"
 
 if __name__ == "__main__":
     print("Generating database")

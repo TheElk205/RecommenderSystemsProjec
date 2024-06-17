@@ -1,5 +1,5 @@
 import pandas as pd
-cosine_path = "./cosine_simm_2.csv"
+cosine_path = "generated_similarities/cosine_simm_2.csv"
 
 
 def read_data():
