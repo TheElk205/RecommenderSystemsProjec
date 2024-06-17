@@ -1,3 +1,4 @@
+from django.db.models import Case, When
 from django.shortcuts import render
 
 # Create your views here.
@@ -24,20 +25,31 @@ def results(request, movie_id):
         context = {}
         return HttpResponse(template.render(context, request))
 
-    tmdb_recommendations = list(Movie.objects.filter(tmdb_id__in=movie.recommendations['tmdb'][:5]))
-    cosine_recommendations = list(Movie.objects.filter(id__in=movie.recommendations['cosine'][:5]))
-    cosine_reduced_recommendations = list(Movie.objects.filter(id__in=movie.recommendations['cosine_reduced'][:5]))
-    jaccard_recommendations = list(Movie.objects.filter(id__in=movie.recommendations['jaccard'][:5]))
-    jaccard_tag_recommendations = list(Movie.objects.filter(id__in=movie.recommendations['jaccard_tag'][:5]))
-    print(cosine_recommendations)
+    jaccard_tags_movies = movie.recommendations['jaccard_tags'][:5]
+    manhattan_movies = movie.recommendations['manhattan'][:5]
+    jaccard_genres_movies = movie.recommendations['jaccard_genres'][:5]
+    cosine_jaccard_movies = movie.recommendations['cosine_jaccard'][:5]
+    cosine_descriptions_movies = movie.recommendations['cosine_descriptions'][:5]
+
+    preserved_jaccard_tags = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(jaccard_tags_movies)])
+    preserved_manhattan = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(manhattan_movies)])
+    preserved_cosine_jaccard = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(cosine_jaccard_movies)])
+    preserved_jaccard_genres = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(jaccard_genres_movies)])
+    preserved_cosine_descriptions = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(cosine_descriptions_movies)])
+
+    manhattan = list(Movie.objects.filter(id__in=manhattan_movies).order_by(preserved_manhattan))
+    jaccard_tags = list(Movie.objects.filter(id__in=jaccard_tags_movies).order_by(preserved_jaccard_tags))
+    jaccard_genres = list(Movie.objects.filter(id__in=jaccard_genres_movies).order_by(preserved_jaccard_genres))
+    cosine_jaccard = list(Movie.objects.filter(id__in=cosine_jaccard_movies).order_by(preserved_cosine_jaccard))
+    cosine_descriptions = list(Movie.objects.filter(id__in=cosine_descriptions_movies).order_by(preserved_cosine_descriptions))
     context = {
         'movie': prepare_movie(movie),
         'recommendations': {
-            "tmdb": [prepare_movie(recom) for recom in tmdb_recommendations],
-            "cosine": [prepare_movie(recom) for recom in cosine_recommendations],
-            "cosine_reduced": [prepare_movie(recom) for recom in cosine_reduced_recommendations],
-            "jaccard": [prepare_movie(recom) for recom in jaccard_recommendations],
-            "jaccard_tag": [prepare_movie(recom) for recom in jaccard_tag_recommendations],
+            "manhattan": [prepare_movie(recom) for recom in manhattan],
+            "jaccard_tags": [prepare_movie(recom) for recom in jaccard_tags],
+            "jaccard_genres": [prepare_movie(recom) for recom in jaccard_genres],
+            "cosine_jaccard": [prepare_movie(recom) for recom in cosine_jaccard],
+            "cosine_descriptions": [prepare_movie(recom) for recom in cosine_descriptions],
         }
     }
 

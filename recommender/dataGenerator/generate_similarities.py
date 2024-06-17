@@ -1,4 +1,7 @@
+from zipfile import ZipFile
+
 import pandas as pd
+import polars as pl
 import numpy as np
 import csv
 import heapq
@@ -8,10 +11,11 @@ from natsort import os_sorted
 import json
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from scipy import sparse
 
-ratings = pd.read_csv("../../../../../Downloads/assigment_final/ml-20m/ratings.csv")
-movies = pd.read_csv("../../../../../Downloads/assigment_final/ml-20m/movies.csv")
-tags = pd.read_csv("../../../../../Downloads/assigment_final/ml-20m/tags.csv")
+# ratings = pd.read_csv("../../../../../Downloads/assigment_final/ml-20m/ratings.csv")
+# movies = pd.read_csv("../../../../../Downloads/assigment_final/ml-20m/movies.csv")
+# tags = pd.read_csv("../../../../../Downloads/assigment_final/ml-20m/tags.csv")
 
 
 def create_tag_dict(tags_df):
@@ -24,7 +28,7 @@ def create_tag_dict(tags_df):
     for index, row in tags_df.iterrows():
         movie_id = row['movieId']
         tag = row['tag']
-        
+
         if movie_id in movie_tags_dict:
             movie_tags_dict[movie_id].append(tag)
         else:
@@ -46,7 +50,7 @@ def create_genre_dict(movies_df):
     return genre_dict
 
 
-def cosine_to_csv(movie_user_matrix,filename):
+def cosine_to_csv(movie_user_matrix, filename):
     for row in movie_user_matrix.iter_rows():
         row = list(row)
         first_cell = row[0]
@@ -54,9 +58,9 @@ def cosine_to_csv(movie_user_matrix,filename):
 
         similarities = {}
         for row_2 in movie_user_matrix.iter_rows():
-            first_cell_compare  = row_2[0]
+            first_cell_compare = row_2[0]
             current_row_compare = row_2[1:]
-           
+
             if first_cell == first_cell_compare:
                 correlation = 1
             else:
@@ -64,14 +68,13 @@ def cosine_to_csv(movie_user_matrix,filename):
 
             similarities[first_cell_compare] = correlation
 
-
-        top_similariteis = heapq.nsmallest(10, similarities, key = similarities.get)
+        top_similariteis = heapq.nsmallest(10, similarities, key=similarities.get)
 
         with open(filename, mode='a', newline='') as file:
-                writer = csv.writer(file)
-                
-                row =  [first_cell] +top_similariteis
-                writer.writerow(row)
+            writer = csv.writer(file)
+
+            row = [first_cell] + top_similariteis
+            writer.writerow(row)
 
 
 def jaccard_similarity_genres(movie_id, genre_dict):
@@ -119,7 +122,7 @@ def manhattan_distance(list1, list2):
     """
     distance = 0
     for i in range(len(list1)):
-        distance =+ abs(list1[i] - list2[i])
+        distance = + abs(list1[i] - list2[i])
     return distance
 
 
@@ -129,14 +132,15 @@ def generate_manhattan_sim(movie_user_matrix):
     :param movie_user_matrix: movie user matrix as read from file
     :return:
     """
+    print("Generating manhattan similarities for all movies")
     all_similarities = {}
-    for row in movie_user_matrix.iter_rows():
+    for row in movie_user_matrix.iterrows():
         row = list(row)
         first_cell = row[0]
         current_row = row[1:]
 
         similarities = {}
-        for row_2 in movie_user_matrix.iter_rows():
+        for row_2 in movie_user_matrix.iterrows():
             row_2 = list(row_2)
             first_cell_compare = row_2[0]
             current_row_compare = row_2[1:]
@@ -189,15 +193,15 @@ def get_summaries_from_json(file_path):
     :param file_path: file path of the movie data
     :return: tmdb summaries of the movie
     """
-    with open(file_path, 'r',encoding="cp437") as file:
+    with open(file_path, 'r', encoding="cp437") as file:
         data = json.load(file)
-        
+
         summaries = data.get('tmdb', {}).get('overview', None)
         if summaries is None:
             return "None"
         else:
             return summaries
-        
+
 
 def movie_description_list(sorted_files):
     """
@@ -230,14 +234,33 @@ def cosine_similarity_matrix_descriptions(list_of_descriptions):
     return cos_sim
 
 
-directory_path = 'C:/Users/mikol/OneDrive/Dokumenty/erasmus_uni/recomendation/assigment_final/jsons'
-file_list = list_files_by_creation_time(directory_path)
-sorted_files = os_sorted(file_list)
-movie_description_dict = movie_description_list(sorted_files)
-list_of_descriptions = list(movie_description_dict.values())
-cos_matrix = cosine_similarity_matrix_descriptions(list_of_descriptions)
-print(cos_matrix)
+def generate_cosine_sim(pivot_data):
+    user_ratings_filled_sparse = sparse.csr_matrix(pivot_data.iloc[1:])
+    similarities = cosine_similarity(user_ratings_filled_sparse)
+    return pd.DataFrame(similarities, columns=pivot_data.columns[1:], index=pivot_data.columns[1:])
 
 
+def read_user_ratings_matrix():
+    print("Reading user ratings matrix")
+    user_ratings = pl.read_csv(
+        ZipFile("./movie_lense_data/ratings_pivot_full.csv.zip").open("ratings_pivot_full.csv").read()
+    )
+    user_ratings_filled = user_ratings.cast(pl.Float64).fill_null(0)
+    return user_ratings_filled.transpose().to_pandas()
+
+
+# directory_path = 'C:/Users/mikol/OneDrive/Dokumenty/erasmus_uni/recomendation/assigment_final/jsons'
+# file_list = list_files_by_creation_time(directory_path)
+# sorted_files = os_sorted(file_list)
+# movie_description_dict = movie_description_list(sorted_files)
+# list_of_descriptions = list(movie_description_dict.values())
+# cos_matrix = cosine_similarity_matrix_descriptions(list_of_descriptions)
+# print(cos_matrix)
+
+if __name__ == "__main__":
+    user_rating_matrix = read_user_ratings_matrix()
+    print("Finished reading user ratings matrix")
+    manhattan = generate_manhattan_sim(user_rating_matrix)
+    store_topn_to_file(manhattan, 10, "manhattan.csv")
 
 

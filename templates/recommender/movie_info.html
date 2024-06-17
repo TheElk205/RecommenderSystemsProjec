@@ -289,11 +289,11 @@ window.onclick = function(event) {
     <div class="max-width-container recommendations-width-container">
         <div class="recommendations-container">
             <h1>Recommendations</h1>
-{#            {% include "recommender/recommendations_tile.html" with title="TMDB" recommendations=recommendations.tmdb %}#}
-            {% include "recommender/recommendations_tile.html" with title="Jaccard" recommendations=recommendations.jaccard %}
-            {% include "recommender/recommendations_tile.html" with title="Jaccard Tags" recommendations=recommendations.jaccard_tag %}
-            {% include "recommender/recommendations_tile.html" with title="Cosine Ratings" recommendations=recommendations.cosine_reduced %}
-            {% include "recommender/recommendations_tile.html" with title="Cosine (ratings) + Jaccard (genres)" recommendations=recommendations.cosine %}
+            {% include "recommender/recommendations_tile.html" with title="Manhattan Distance (ratings)" recommendations=recommendations.manhattan %}
+            {% include "recommender/recommendations_tile.html" with title="Jaccard Tags" recommendations=recommendations.jaccard_tags %}
+            {% include "recommender/recommendations_tile.html" with title="Jaccard Genres" recommendations=recommendations.jaccard_genres %}
+            {% include "recommender/recommendations_tile.html" with title="Cosine Ratings + Jaccard Genres" recommendations=recommendations.cosine_jaccard %}
+            {% include "recommender/recommendations_tile.html" with title="Cosine Descriptions" recommendations=recommendations.cosine_descriptions %}
         </div>
     </div>
     <!-- The Modal -->
