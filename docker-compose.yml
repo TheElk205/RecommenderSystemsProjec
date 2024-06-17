@@ -1,26 +1,14 @@
 version: "3.3"
 services:
   recommender-app:
-    image: eveestudio/recommender:0.2.1-alpine
+    image: eveestudio/recommender:0.3.0-alpine
     networks:
       - traefik-public
       - database
-    ports:
-      - 8000:8000
     environment:
       - DB_HOST=database
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=traefik-public
-      - traefik.constraint-label=traefik-public
-      - traefik.http.routers.recommender-app-http.rule=Host(`app.recommender.evee.studio`)
-      - traefik.http.routers.recommender-app-http.entrypoints=http
-      - traefik.http.routers.recommender-app-http.middlewares=https-redirect
-      - traefik.http.routers.recommender-app-https.rule=Host(`app.recommender.evee.studio`)
-      - traefik.http.routers.recommender-app-https.entrypoints=https
-      - traefik.http.routers.recommender-app-https.tls=true
-      - traefik.http.routers.recommender-app-https.tls.certresolver=le
-      - traefik.http.services.recommender-app.loadbalancer.server.port=8000
+    ports:
+      - 8000:8000
   database:
     image: postgres:16.3
     volumes:
@@ -28,5 +16,4 @@ services:
     networks:
       - database
 networks:
-  traefik-public:
   database:

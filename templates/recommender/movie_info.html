@@ -259,7 +259,8 @@ window.onclick = function(event) {
             <div class="movie-details">
                 <div class="movie-title">{{ movie.data.title }}</div>
                 <div>Released: {{ movie.data.release_date }}</div>
-                <div>Youth rating: {{ movie.data.mpaa }}</div>
+                <div>Youth rating: {{ movie.data.ratings.movielens }}</div>
+                <div>Rating: {{ movie.data.mpaa }}</div>
                 <div>Duration: {{ movie.data.duration }} minutes</div>
                 <div>
                     {{ movie.data.description }}
@@ -267,7 +268,7 @@ window.onclick = function(event) {
                 <div class="movie-rating">
                     {% with ''|center:5 as range %}
                     {% for _ in range %}
-                      {% if forloop.counter < movie.data.ratings.movielens %}
+                      {% if forloop.counter <= movie.data.ratings.movielens %}
                         <i class="fa fa-star"></i>
                       {% elif movie.data.ratings.movielens|sub:forloop.counter < 0.5 and  movie.data.ratings.movielens|sub:forloop.counter > 0 %}
                           <i class="fa fa-star-o"></i>

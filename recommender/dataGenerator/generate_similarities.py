@@ -6,16 +6,13 @@ import numpy as np
 import csv
 import heapq
 from scipy import spatial
-import os
-from natsort import os_sorted
-import json
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics.pairwise import manhattan_distances
 from scipy import sparse
 
-# ratings = pd.read_csv("../../../../../Downloads/assigment_final/ml-20m/ratings.csv")
-# movies = pd.read_csv("../../../../../Downloads/assigment_final/ml-20m/movies.csv")
-# tags = pd.read_csv("../../../../../Downloads/assigment_final/ml-20m/tags.csv")
+import os
+import json
 
 
 def create_tag_dict(tags_df):
@@ -36,6 +33,41 @@ def create_tag_dict(tags_df):
     return movie_tags_dict
 
 
+def list_files_by_creation_time(directory):
+    """
+    Get all file names in a directory, sorted ascending after their creating timestamp
+    :param directory: directory where to look for files in
+    :return: list of file names, sorted by creation time ascending
+    """
+    entries = os.scandir(directory)
+    files = [(entry.name, entry.stat().st_ctime) for entry in entries if entry.is_file()]
+    sorted_files = sorted(files, key=lambda x: x[1])
+    return [int(file[0].split(".")[0]) for file in sorted_files]
+
+
+def get_tags_from_files(ids, folder):
+    tags = {}
+    for id in ids:
+        with open("{}/{}.json".format(folder, id), 'r', encoding="cp437") as file:
+            data = json.load(file)
+
+            keywords = data.get('tmdb', {}).get('keywords', [])
+            if len(keywords) == 0:
+                continue
+            tags[id] = []
+            for keyword in keywords:
+                tags[id].append(keyword["name"])
+    return tags
+
+
+def get_all_possible_tags(tags_df, folder):
+    ids = list_movieids_by_creation_time(folder)
+    tags_dict = create_tag_dict(tags_df)
+    missing_tags = list(set(ids) - set(tags_dict.keys()))
+    missed = get_tags_from_files(missing_tags, folder)
+    return {**tags_dict, **missed}
+
+
 def create_genre_dict(movies_df):
     """
     Extracts the genres as a single dictionaries form all given movies
@@ -48,6 +80,45 @@ def create_genre_dict(movies_df):
         genres = row['genres'].split('|')
         genre_dict[movie_id] = genres
     return genre_dict
+
+
+def get_genres_from_files(ids, folder):
+    missing = {}
+    for id in ids:
+        with open("{}/{}.json".format(folder, id), 'r', encoding="cp437") as file:
+            data = json.load(file)
+
+            genres = data.get('tmdb', {}).get('genres', [])
+            if genres and len(genres) > 0:
+                missing[id] = []
+                for genre in genres:
+                    missing[id].append(genre["name"])
+            else:
+                genres = data.get('imdb', {}).get('genres', [])
+                if genres and len(genres) > 0:
+                    missing[id] = genres
+
+    return missing
+
+
+def list_movieids_by_creation_time(directory):
+    """
+    Get all movie ids in a directory, sorted ascending after their creating timestamp
+    :param directory: directory where to look for files in
+    :return: list of file names, sorted by creation time ascending
+    """
+    entries = os.scandir(directory)
+    files = [(entry.name, entry.stat().st_ctime) for entry in entries if entry.is_file()]
+    sorted_files = sorted(files, key=lambda x: x[1])
+    return [int(file[0].split(".")[0]) for file in sorted_files]
+
+
+def get_all_possible_genres(movies_df, folder):
+    ids = list_movieids_by_creation_time(folder)
+    genres_dict = create_genre_dict(movies_df)
+    missing_genres = list(set(ids) - set(genres_dict.keys()))
+    missed = get_genres_from_files(missing_genres, folder)
+    return {**genres_dict, **missed}
 
 
 def cosine_to_csv(movie_user_matrix, filename):
@@ -77,22 +148,20 @@ def cosine_to_csv(movie_user_matrix, filename):
             writer.writerow(row)
 
 
-def jaccard_similarity_genres(movie_id, genre_dict):
+def jaccard_similarity_genres(movie_id, dict_to_evaluate):
     """
     Calculate Jaccard Similarity for one movie in combination with all others taking genres into account.
     :param movie_id: the tmdb movie ID we want to generate jaccard similarity for
-    :param genre_dict: dictionary containing genres for all movies
+    :param dict_to_evaluate: dictionary containing genres for all movies
     :return: similarity dict with all calculated similarities. Key is other movieId
     """
     # try:
-    given_movie_genres = set(genre_dict[movie_id])
+    given_movie_genres = set(dict_to_evaluate[movie_id])
     similarities = {}
-    for other_movie_id, other_genres in genre_dict.items():
+    for other_movie_id, other_genres in dict_to_evaluate.items():
         other_movie_genres = set(other_genres)
         # Calculate Jaccard similarity
-        if (len(given_movie_genres.intersection(other_movie_genres)) == 0):
-            jaccard_sim = 0
-        else:
+        if len(given_movie_genres.intersection(other_movie_genres)) != 0:
             jaccard_sim = len(given_movie_genres.intersection(other_movie_genres)) / len(
                 given_movie_genres.union(other_movie_genres))
             similarities[other_movie_id] = jaccard_sim
@@ -105,6 +174,8 @@ def generate_jaccard_sim(genre_dict):
     :param genre_dict: The extracted genres as a dictionary
     :return: dataframe containing all similarities
     """
+
+    manhattan_distances
     correlations = {}
     for key in genre_dict:
         correlations[key] = jaccard_similarity_genres(key, genre_dict)
@@ -113,48 +184,15 @@ def generate_jaccard_sim(genre_dict):
     return correlations_df
 
 
-def manhattan_distance(list1, list2):
-    """
-    Calculates the manhatten distance between to lists of ratings
-    :param list1: ratings movie 1
-    :param list2: ratings movie 2
-    :return: manhatten distance between the two lists
-    """
-    distance = 0
-    for i in range(len(list1)):
-        distance = + abs(list1[i] - list2[i])
-    return distance
-
-
-def generate_manhattan_sim(movie_user_matrix):
+def generate_manhattan_sim(pivot_data):
     """
     Iterates over all ratings, generates a dataframe containing all similarities; symmetric
     :param movie_user_matrix: movie user matrix as read from file
     :return:
     """
-    print("Generating manhattan similarities for all movies")
-    all_similarities = {}
-    for row in movie_user_matrix.iterrows():
-        row = list(row)
-        first_cell = row[0]
-        current_row = row[1:]
-
-        similarities = {}
-        for row_2 in movie_user_matrix.iterrows():
-            row_2 = list(row_2)
-            first_cell_compare = row_2[0]
-            current_row_compare = row_2[1:]
-
-            if first_cell == first_cell_compare:
-                correlation = 1
-            else:
-                correlation = manhattan_distance(current_row, current_row_compare)
-
-            similarities[first_cell_compare] = correlation
-        all_similarities[first_cell] = similarities
-    correlations_df = pd.DataFrame.from_dict(all_similarities, orient='index')
-    correlations_df.fillna(0, inplace=True)
-    return correlations_df
+    user_ratings_filled_sparse = sparse.csr_matrix(pivot_data.iloc[1:])
+    similarities = manhattan_distances(user_ratings_filled_sparse)
+    return pd.DataFrame(similarities, columns=pivot_data.index[1:], index=pivot_data.index[1:])
 
 
 def store_topn_to_file(sim, n=10, file="cosine_full.csv"):
@@ -173,18 +211,6 @@ def store_topn_to_file(sim, n=10, file="cosine_full.csv"):
 
     with open(file, "wb") as myfile:
         np.savetxt(myfile, data, fmt="%s", delimiter=',', newline='\n')
-
-
-def list_files_by_creation_time(directory):
-    """
-    Get all file names in a directory, sorted ascending after their creating timestamp
-    :param directory: directory where to look for files in
-    :return: list of file names, sorted by creation time ascending
-    """
-    entries = os.scandir(directory)
-    files = [(entry.name, entry.stat().st_ctime) for entry in entries if entry.is_file()]
-    sorted_files = sorted(files, key=lambda x: x[1])
-    return [file[0] for file in sorted_files]
 
 
 def get_summaries_from_json(file_path):
@@ -237,7 +263,7 @@ def cosine_similarity_matrix_descriptions(list_of_descriptions):
 def generate_cosine_sim(pivot_data):
     user_ratings_filled_sparse = sparse.csr_matrix(pivot_data.iloc[1:])
     similarities = cosine_similarity(user_ratings_filled_sparse)
-    return pd.DataFrame(similarities, columns=pivot_data.columns[1:], index=pivot_data.columns[1:])
+    return pd.DataFrame(similarities, columns=pivot_data.index[1:], index=pivot_data.index[1:])
 
 
 def read_user_ratings_matrix():
@@ -249,13 +275,62 @@ def read_user_ratings_matrix():
     return user_ratings_filled.transpose().to_pandas()
 
 
-# directory_path = 'C:/Users/mikol/OneDrive/Dokumenty/erasmus_uni/recomendation/assigment_final/jsons'
-# file_list = list_files_by_creation_time(directory_path)
-# sorted_files = os_sorted(file_list)
-# movie_description_dict = movie_description_list(sorted_files)
-# list_of_descriptions = list(movie_description_dict.values())
-# cos_matrix = cosine_similarity_matrix_descriptions(list_of_descriptions)
-# print(cos_matrix)
+def generate_translation_dict_tmdb_movielens(folder_path):
+    translation_dictionary = {}
+
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        if os.path.isfile(file_path):
+            with open(file_path, 'r') as f:
+                data = json.load(f)
+                tmdb_id = data.get('tmdb', {}).get('id', None)
+                movielensId = data.get('movielensId')
+                translation_dictionary[tmdb_id] = movielensId
+    return translation_dictionary
+
+
+def get_tmdb_recomendations(file_path):
+    try:
+        with open(file_path, 'r', encoding="cp437") as file:
+            data = json.load(file)
+
+            summaries = data.get('tmdb', {}).get('recommendations', None)
+            if summaries is None:
+                return "None"
+            else:
+                return summaries
+    except:
+        return []
+
+
+def create_tmbd_list(file_path):
+    first20 = get_tmdb_recomendations(file_path)
+    tmdb_hopped_recomendations = first20
+    for i in first20:
+        file_path = os.path.join('./content_ml-latest/extracted_content_ml-latest/', str(i) + '.json')
+        if os.path.isfile(file_path):
+            another20 = get_tmdb_recomendations('./content_ml-latest/extracted_content_ml-latest/' + str(i) + '.json')
+            try:
+                tmdb_hopped_recomendations = tmdb_hopped_recomendations + another20
+            except:
+                pass
+    return tmdb_hopped_recomendations
+
+
+def count_elements_in_list(list1, list2):
+    set2 = set(list2)
+
+    count = sum(1 for element in list1 if element in set2)
+
+    return count
+
+
+def evaluation(row_from_csv, dictionary):
+    recomendations_tmdb_translated = [dictionary.get(item, item) for item in row_from_csv]
+
+    result = count_elements_in_list(recomendations_tmdb_translated, row_from_csv)
+    return result
+
 
 if __name__ == "__main__":
     user_rating_matrix = read_user_ratings_matrix()

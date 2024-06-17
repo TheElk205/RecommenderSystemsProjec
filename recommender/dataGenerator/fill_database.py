@@ -5,11 +5,11 @@ import pandas as pd
 from RecommenderSystemsFinalProject.settings import DATABASES
 
 movie_files_path = "./movie_lense_data/extracted_content_ml-latest"
-cosine_description_path = "generated_similarities/cosine_full_descriptions.csv"
+cosine_description_path = "generated_similarities/cosine_full_descriptions_english_reduced.csv"
 cosine_jaccard_path = "generated_similarities/cosine_jaccard.csv"
-jaccard_genres_path = "generated_similarities/jaccard_similarity_final_no_duplicates.csv"
-jaccard_tags_path = "generated_similarities/tags_jaccard_similarity_final_no_duplicates.csv"
-manhattan_path = "generated_similarities/manhattan2.csv"
+jaccard_genres_path = "generated_similarities/jaccard_genres.csv"
+jaccard_tags_path = "generated_similarities/jaccard_tags.csv"
+manhattan_path = "generated_similarities/manhattan.csv"
 
 
 def store_in_recommendations(recommendation, key, data, movielens_id, missing_metrics):

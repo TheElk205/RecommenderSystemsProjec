@@ -13,7 +13,7 @@
 {#            {{ recommendation.data.ratings.movielens }}#}
                 {% with ''|center:5 as range %}
                     {% for _ in range %}
-                      {% if forloop.counter < recommendation.data.ratings.movielens %}
+                      {% if forloop.counter <= recommendation.data.ratings.movielens %}
                         <i class="fa fa-star"></i>
                       {% elif recommendation.data.ratings.movielens|sub:forloop.counter < 0.5 and  recommendation.data.ratings.movielens|sub:forloop.counter > 0 %}
                           <i class="fa fa-star-o"></i>
